@@ -1,0 +1,45 @@
+
+main:
+JSR l_line_one
+LDA #$0C
+STA $0300
+JSR l_line_two
+LDA #$0A
+STA $0320
+JSR end
+
+l_line_one:
+LDA #$08	;load a with hex 08 as color
+STA $0230	;store a at gpu_mem 0230
+LDY #$00	;load y with hex 00 (init value)
+;STY $0000	;store y at zp 00
+JSR w_one
+
+l_line_two:
+LDA #$0D	;load a with hex 08 as color
+STA $0240	;store a at gpu_mem 0240
+LDY #$00	;load y with hex 00 (init value)
+;STY $0001	;store y at zp 01
+JSR w_two
+
+
+w_one:
+LDA #$04	;load a with hex 04 as color
+INY		;increment Y
+CPY #$0F	;compare y to set max value
+STA $0200,Y	;store a at gpu_mem 0200, offset by y
+BNE w_one	;branch if c
+RTS
+
+w_two:
+LDA #$06	;load a with hex 04 as color
+INY		;increment Y
+CPY #$0F	;compare y to set max value
+STA $0220,Y	;store a at gpu_mem 0220, offset by y
+BNE w_two	;branch if c
+RTS
+
+end:
+LDA #$05
+STA $0250
+BRK
